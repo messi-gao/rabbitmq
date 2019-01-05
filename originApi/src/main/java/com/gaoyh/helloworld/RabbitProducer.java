@@ -3,7 +3,8 @@ package com.gaoyh.helloworld;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-import com.gaoyh.helloworld.config.RabbitMqConfig;
+import com.gaoyh.config.RabbitMqConfig;
+import com.gaoyh.util.RabbitUtils;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -17,15 +18,8 @@ public class RabbitProducer {
 
 
     public static void main(String[] args) throws IOException, TimeoutException {
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost(RabbitMqConfig.HOST);
-        connectionFactory.setPort(RabbitMqConfig.PORT);
-        connectionFactory.setVirtualHost(RabbitMqConfig.VIRTUAL_HOST);
-        connectionFactory.setUsername(RabbitMqConfig.USER_NAME);
-        connectionFactory.setPassword(RabbitMqConfig.PASSWORD);
-
         // 创建链接
-        Connection connection = connectionFactory.newConnection();
+        Connection connection = RabbitUtils.getConnection();
         // 创建信道
         Channel channel = connection.createChannel();
         // 创建一个 type="direct" 、持久化的、非自动删除的交换器

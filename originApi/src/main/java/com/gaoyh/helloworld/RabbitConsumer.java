@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.gaoyh.helloworld.config.RabbitMqConfig;
+import com.gaoyh.config.RabbitMqConfig;
+import com.gaoyh.util.RabbitUtils;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Address;
 import com.rabbitmq.client.Channel;
@@ -13,13 +14,12 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+/**
+ * @author gaoyh
+ */
 public class RabbitConsumer {
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setUsername(RabbitMqConfig.USER_NAME);
-        connectionFactory.setPassword(RabbitMqConfig.PASSWORD);
-        connectionFactory.setVirtualHost(RabbitMqConfig.VIRTUAL_HOST);
-        Connection connection = connectionFactory.newConnection(new Address[]{new Address(RabbitMqConfig.HOST, RabbitMqConfig.PORT)});
+        Connection connection = RabbitUtils.getConnection();
         Channel channel = connection.createChannel();
         channel.basicQos(64);
         DefaultConsumer consumer = new DefaultConsumer(channel) {
