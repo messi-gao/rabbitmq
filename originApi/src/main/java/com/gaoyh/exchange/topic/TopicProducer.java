@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Fanout消费者
+ * Topic
  *
  * @author gaoyh
  */

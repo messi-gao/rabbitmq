@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Fanout消费者
+ * Mandatory消费者
  *
  * @author gaoyh
  */
@@ -19,13 +19,7 @@ public class MandatoryProducer {
         Connection connection = RabbitUtils.getConnection();
         Channel channel = connection.createChannel();
         channel.exchangeDeclare(MANDATORY_PRODUCER_EXCHANGE, BuiltinExchangeType.DIRECT);
-        channel.addReturnListener((replyCode, replyText, exchange, routingKey, properties, body) -> {
-            System.out.println("Body:" + new String(body));
-            System.out.println("Exchange:" + exchange);
-            System.out.println("ReplyText:" + replyText);
-            System.out.println("RoutingKey:" + routingKey);
-            System.out.println("ReplyCode:" + replyCode);
-        });
+        channel.addReturnListener(RabbitUtils::handleReturn);
         for (String routingKey : RabbitMqConfig.ROUTING_KEY_LIST) {
             channel.basicPublish(MANDATORY_PRODUCER_EXCHANGE, routingKey, true, null, routingKey.getBytes());
         }

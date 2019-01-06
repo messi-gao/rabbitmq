@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
 /**
- * 一个队列绑定一个交换器多个路由键
  *
  * @author gaoyh
  */
