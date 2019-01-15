@@ -27,12 +27,12 @@ public class RabbitUtils {
                                       BuiltinExchangeType builtinExchangeType) throws IOException {
         Channel channel = connection.createChannel();
         channel.exchangeDeclare(exchange, builtinExchangeType);
+        channelConsumeMessage(exchange, routeKeyList, channel);
+    }
+
+    public static void channelConsumeMessage(String exchange, List<String> routeKeyList, Channel channel) throws IOException {
         String queue = channel.queueDeclare().getQueue();
-        if (CollectionUtils.isNotEmpty(routeKeyList)) {
-            for (String routingKey : routeKeyList) {
-                channel.queueBind(queue, exchange, routingKey);
-            }
-        }
+        bindRouteKeys(exchange, routeKeyList, channel, queue);
         DefaultConsumer defaultConsumer = getAndHandleDefaultConsumer(channel);
         channel.basicConsume(queue, defaultConsumer);
     }
@@ -42,14 +42,15 @@ public class RabbitUtils {
                                       Map<String, Object> arguments) throws IOException {
         Channel channel = connection.createChannel();
         channel.exchangeDeclare(exchange, builtinExchangeType.getType(), durable, autoDelete, arguments);
-        String queue = channel.queueDeclare().getQueue();
+        channelConsumeMessage(exchange, routeKeyList, channel);
+    }
+
+    public static void bindRouteKeys(String exchange, List<String> routeKeyList, Channel channel, String queue) throws IOException {
         if (CollectionUtils.isNotEmpty(routeKeyList)) {
             for (String routingKey : routeKeyList) {
                 channel.queueBind(queue, exchange, routingKey);
             }
         }
-        DefaultConsumer defaultConsumer = getAndHandleDefaultConsumer(channel);
-        channel.basicConsume(queue, defaultConsumer);
     }
 
     public static DefaultConsumer getAndHandleDefaultConsumer(Channel channel) {
